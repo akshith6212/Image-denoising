@@ -1,42 +1,58 @@
-function [img,time_bil,psnr_val] = bilateral(img1,w,sigma_d,sigma_r)
-    input_imag = double(imread('peppers.png'))/255;
-    time_bil = Inf;
-    tStart=tic;
-    img1 = applycform(img1,makecform('srgb2lab'));
-    [X,Y] = meshgrid(-w:w,-w:w);
-    % spatial or domain filter
-    G = exp(-((X.^2+Y.^2)/(2*sigma_d^2)));
-    dim = size(img1);
-    img = zeros(dim);
-    for i = 1:dim(1)
-       for j = 1:dim(2)
-          
-             % for local region.
-             iMin = max(i-w,1);
-             iMax = min(i+w,dim(1));
-             jMin = max(j-w,1);
-             jMax = min(j+w,dim(2));
-             I = img1(iMin:iMax,jMin:jMax,:);%neighbourhoood
-         
-             u = I(:,:,1)-img1(i,j,1);
-             v = I(:,:,2)-img1(i,j,2);
-             z = I(:,:,3)-img1(i,j,3);
-             % range or photometric filter
-             H = exp(-(u.^2+v.^2+z.^2)/(2*sigma_r^2));
-             
-             % For filter response.
-             F = H.*G((iMin:iMax)-i+w+1,(jMin:jMax)-j+w+1);
-             s = sum(F(:));
-             img(i,j,1) = sum(sum(F.*I(:,:,1)))/s;
-             img(i,j,2) = sum(sum(F.*I(:,:,2)))/s;
-             img(i,j,3) = sum(sum(F.*I(:,:,3)))/s;
-                    
-       end 
-    end
-       img = applycform(img,makecform('lab2srgb'));
-       figure();
-       imshow(img);
-       psnr_val = PSNR(input_imag,img);
-       tElapsed = toc(tStart);  
-       time_bil = min(tElapsed, time_bil);
+clc;
+clear ;
+close all;
+
+%Read the Image
+% [file,path] = uigetfile('*.*');
+% f = fullfile(path,file);
+a = imread("elon-musk.jpg");
+b = size(a);
+
+% Convert to grayscale incase it is color
+if size(b,2)==3
+a1 = rgb2gray(a);
 end
+
+%Add noise
+a = imnoise(a1,'gaussian',0,0.1);
+a = double(a);
+
+%Initialize the parameters
+n = 11;                             %Filter Size
+n1=ceil(n/2);
+vars =50;                           %Spacial Variance
+varr = 25;                          %Pixel Value Variance
+c=0;
+c1=0;
+msg = 'Reducing Noise';
+x = 0;
+f = waitbar(x,msg);
+%Bilateral Filter loop
+for i=n1:b(1)-n1
+    for j=n1:b(2)-n1
+        for k=1:n
+            for l=1:n
+            c=c+gs(sqrt((-n1+k)^2+(-n1+l)^2),0,vars)*gs(a(i-n1+k,j-n1+l),a(i,j),varr)*a(i-n1+k,j-n1+l);
+            c1=c1+gs(sqrt((-n1+k)^2+(-n1+l)^2),0,vars)*gs(a(i-n1+k,j-n1+l),a(i,j),varr);
+            end
+        end
+        
+        d(i-n1+1,j-n1+1)=c/c1;
+        c=0;
+        c1=0;
+    end
+    x = i/(b(1)-n1);
+    waitbar(x,f)  
+end
+%Convert Output image To uint8
+d1 = uint8(d);
+close(f)
+%Plotting the Images
+figure;
+subplot(1,2,1)
+imshow(uint8(a));
+title('Noisy Image')
+% figure;
+subplot(1,2,2)
+imshow(d1);
+title('Bilateral Filter Output Image')
