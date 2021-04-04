@@ -19,7 +19,7 @@ This is the ratio used to measure the quality measurement between the original a
 where MSE is defined as the mean square error of the given image.
 
 ##### Note
-> For Image denoising using Bilateral Filterring and Image cartooning run [bflt_analysis.m](https://github.com/akshith6212/Image-denoising/blob/main/codes/bilateral.m).<br>
+> For Image denoising using Bilateral Filterring and Image cartooning run [bilateral.m](https://github.com/akshith6212/Image-denoising/blob/main/codes/bilateral.m).<br>
 <!---
 > For Comparision of performance metrics with other filters run [gim.m](https://github.com/sairamkiran9/Image-denoising/blob/main/codes/gim.m)
 --->
