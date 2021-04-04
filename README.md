@@ -11,12 +11,16 @@ The bilateral filtering is a combination of domain and range filtering. The doma
 
 The above equations are used to change the pixel weights and develop the final filtered edge preserved smoothing image and this technique is known as bilateral filtering.
 
+<!---
 ### Peak-Signal-To-Noise-Ratio(PSNR)
 This is the ratio used to measure the quality measurement between the original and a denoised image.The higher the PSNR value,the better the quality of the denoised or reconstructed image. It is measured in decibles(dB). And the equation when the image is scaled is given as:
-
+--->
+<!---
 ![alt text](https://github.com/akshith6212/Image-denoising/blob/main/psnr.jpg)
-
+--->
+<!---
 where MSE is defined as the mean square error of the given image.
+--->
 
 ##### Note
 > For Image denoising using Bilateral Filterring and Image cartooning run [bilateral.m](https://github.com/akshith6212/Image-denoising/blob/main/codes/bilateral.m).<br>
